@@ -73,7 +73,7 @@ button.b[disabled]{opacity:.4}button.g{flex:0 0 auto;background:var(--card);colo
       return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: body, redirect: 'follow' })
         .then(function (r) { return r.json(); });
     }
-    return once().catch(function () { return new Promise(function (r) { setTimeout(r, 1200); }).then(once); });
+    return once().catch(function (e) { ST.err = String(e && e.message ? e.message : e); return new Promise(function (r) { setTimeout(r, 1200); }).then(once); });
   }
 
   /* ---------- umumiy ---------- */
@@ -216,7 +216,7 @@ button.b[disabled]{opacity:.4}button.g{flex:0 0 auto;background:var(--card);colo
       ST.D = r;
       var sc = restore();
       if (sc === 'case') sCase(); else if (sc === 'profile') sProfile(); else sWelcome();
-    }).catch(function () { fail('Ulanish xatosi', 'Internet yoki server javob bermadi.'); });
+    }).catch(function (e) { fail('Ulanish xatosi', 'Server javob bermadi. Sabab: ' + (e && e.message ? e.message : e) + (ST.err ? ' | 1-urinish: ' + ST.err : '')); });
   }
   start();
 })();
