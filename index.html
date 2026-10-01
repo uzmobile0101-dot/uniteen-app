@@ -54,7 +54,7 @@ button.b[disabled]{opacity:.4}button.g{flex:0 0 auto;background:var(--card);colo
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
   var ST = { screen: 'load', D: null, p: {}, a: [], sec: [], hid: 0, idx: 0, t0: 0, consent: false, busy: false };
-  var KEY = 'uni_form_v1';
+  var KEY = 'uni_form_v2';   // v2: keyslar yangilandi, eski saqlangan javoblar ishlatilmasin
 
   function haptic(t) { try { tg && tg.HapticFeedback && tg.HapticFeedback.impactOccurred(t || 'light'); } catch (e) {} }
   function save() { try { localStorage.setItem(KEY, JSON.stringify({ p: ST.p, a: ST.a, sec: ST.sec, hid: ST.hid, idx: ST.idx, screen: ST.screen, n: ST.D ? ST.D.cases.length : 0 })); } catch (e) {} }
@@ -105,10 +105,11 @@ button.b[disabled]{opacity:.4}button.g{flex:0 0 auto;background:var(--card);colo
       '<div class="row"><b>🕗 Ish vaqti</b><span>08:30–18:00</span></div>' +
       '<div class="row"><b>💰 Maosh</b><span>6 500 000 so\'m (fix + bonus)</span></div>' +
       '<div class="row"><b>📍 Manzil</b><span>Toshkent, Yashnobod, Qorasuv-35</span></div></div>' +
-      '<h2>Saralash 3 bosqich (25–30 daqiqa)</h2>' +
+      '<h2>Saralash 4 bosqich (30–35 daqiqa)</h2>' +
       '<ol class="steps"><li><div><b>Anketa va 20 ta keys</b><br><span class="hint">shu ilovada</span></div></li>' +
       '<li><div><b>5 ta savolga video javob</b><br><span class="hint">3 tilda, botda</span></div></li>' +
-      '<li><div><b>To\'liq bo\'yli foto</b><br><span class="hint">botda</span></div></li></ol>' +
+      '<li><div><b>To\'liq bo\'yli foto</b><br><span class="hint">botda</span></div></li>' +
+      '<li><div><b>3 ta qisqa yozma savol</b><br><span class="hint">botda</span></div></li></ol>' +
       '<p class="hint">Javoblaringiz saqlanadi — ilovani yopib, keyin davom ettirishingiz mumkin.</p>');
     foot('<button class="b" id="go">Boshlash</button>', [['go', sConsent]]);
   }
@@ -116,7 +117,8 @@ button.b[disabled]{opacity:.4}button.g{flex:0 0 auto;background:var(--card);colo
   function sConsent() {
     ST.screen = 'consent'; setBack(sWelcome);
     view('<h1>🔒 Rozilik</h1><div class="card">Ism, telefon, video va foto ma\'lumotlaringiz faqat nomzodlarni saralash maqsadida ' +
-      '<b>Uniteen Academy rahbariyati</b> tomonidan ko\'rib chiqiladi va uchinchi shaxslarga berilmaydi.</div>' +
+      '<b>Uniteen Academy rahbariyati</b> tomonidan ko\'rib chiqiladi va uchinchi shaxslarga berilmaydi. ' +
+      'Istalgan vaqtda botga <b>/ochirish</b> deb yozib, ma\'lumotlaringizni o\'chirishingiz mumkin.</div>' +
       '<label class="chk"><input type="checkbox" id="cb"' + (ST.consent ? ' checked' : '') + '><span>Shaxsiy ma\'lumotlarimni (ism, telefon, video, foto) shu maqsadda qayta ishlashga roziman</span></label>');
     var upd = function () { ST.consent = $('cb').checked; $('nx').disabled = !ST.consent; };
     foot('<button class="b" id="nx"' + (ST.consent ? '' : ' disabled') + '>Davom etish</button>', [['nx', sProfile]]);
@@ -198,7 +200,8 @@ button.b[disabled]{opacity:.4}button.g{flex:0 0 auto;background:var(--card);colo
     if (kind === 'done') view('<div class="big">✅</div><h1 class="c">Ariza allaqachon topshirilgan</h1><p class="c hint">Natijalar bo\'yicha siz bilan bog\'lanamiz.</p>');
     else view('<div class="big">🎉</div><h1 class="c">' + (kind === 'resume' ? 'Anketa qabul qilingan' : 'Anketa va keyslar qabul qilindi') + '</h1>' +
       '<div class="card"><b>Endi botga qayting:</b><ol class="steps"><li><div>5 ta savolga <b>video</b> javob bering (har biri uz → ru → en tilda, ' + ST.D.video.min + '–' + ST.D.video.max + ' soniya)</div></li>' +
-      '<li><div>To\'liq bo\'yli <b>foto</b> yuboring</div></li></ol></div>' +
+      '<li><div>To\'liq bo\'yli <b>foto</b> yuboring</div></li>' +
+      '<li><div>3 ta qisqa <b>yozma savolga</b> javob bering</div></li></ol></div>' +
       '<p class="c hint">Bot sizga birinchi savolni allaqachon yubordi.</p>');
     foot('<button class="b" id="cl">Botga qaytish</button>', [['cl', function () { if (tg) tg.close(); else window.close(); }]]);
   }
