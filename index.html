@@ -38,6 +38,8 @@ button.b[disabled]{opacity:.4}button.g{flex:0 0 auto;background:var(--card);colo
 .steps{counter-reset:s;padding:0;list-style:none}.steps li{counter-increment:s;display:flex;gap:12px;margin:10px 0}
 .steps li:before{content:counter(s);flex:0 0 28px;height:28px;border-radius:50%;background:var(--btn);color:var(--btx);display:grid;place-items:center;font-weight:700;font-size:14px}
 .chk{display:flex;gap:12px;align-items:flex-start;margin:14px 0}.chk input{width:22px;height:22px;margin-top:2px}
+.ph{margin:0 0 14px}.ph img{display:block;width:100%;border-radius:14px;background:var(--card)}.ph span{display:block;margin:6px 2px 0;color:var(--hint);font-size:14px}
+ul.pts{margin:0 0 12px;padding-left:20px}ul.pts li{margin:4px 0}
 </style>
 </head>
 <body>
@@ -111,7 +113,28 @@ button.b[disabled]{opacity:.4}button.g{flex:0 0 auto;background:var(--card);colo
       '<li><div><b>To\'liq bo\'yli foto</b><br><span class="hint">botda</span></div></li>' +
       '<li><div><b>3 ta qisqa yozma savol</b><br><span class="hint">botda</span></div></li></ol>' +
       '<p class="hint">Javoblaringiz saqlanadi — ilovani yopib, keyin davom ettirishingiz mumkin.</p>');
-    foot('<button class="b" id="go">Boshlash</button>', [['go', sConsent]]);
+    foot('<button class="b g" id="ab">🏢 Biz haqimizda</button><button class="b" id="go">Boshlash</button>', [['ab', sAbout], ['go', sConsent]]);
+  }
+
+  /* Biz haqimizda: rasmlar about/ papkasida (shu sayt bilan birga) */
+  var ABOUT = [['jamoa.jpg', 'Uniteen Academy jamoasi'], ['ustozlar.jpg', 'Bizning ustozlar'], ['ustozlar2.jpg', 'Bizning ustozlar'], ['ingliz.jpg', 'Ingliz tili ustozlari'], ['matematika.jpg', 'Matematika ustozlari'],
+    ['it.jpg', 'IT ustozlari'], ['xona.jpg', 'O\'quv xonasi'], ['dam.jpg', 'Dam olish va o\'qish maydoni']];
+  function sAbout() {
+    ST.screen = 'about'; setBack(sWelcome);
+    view('<h1>🏢 Uniteen Academy</h1>' +
+      '<p>🎯 <b>Maqsadimiz</b> — o\'quvchilarimizni xalqaro maydonlarga olib chiqish.</p>' +
+      '<div class="ph"><img src="about/jamoa.jpg" alt="Jamoa" loading="lazy" onerror="this.parentNode.style.display=\'none\'"><span>Uniteen Academy jamoasi</span></div>' +
+      '<h2>📚 Yo\'nalishlar</h2><ul class="pts"><li>Ingliz tili: Beginner dan IELTS / CEFR gacha</li>' +
+      '<li>Matematika: Milliy sertifikat, SAT, olimpiadalar va ixtisoslashgan maktablarga tayyorlov</li>' +
+      '<li>IT: Frontend, Backend, Scratch va AI</li><li>Pochemuchka</li></ul>' +
+      '<h2>👩‍🏫 Jamoa</h2><p>Tajribali ustozlar: 4 yildan 20 yilgacha tajriba, IELTS 8.5 natijali o\'qituvchilar, Milliy sertifikatdan A+ natija, IT bo\'yicha Certiport sertifikatlari.</p>' +
+      ABOUT.slice(1, 6).map(function (a) { return '<div class="ph"><img src="about/' + a[0] + '" alt="' + esc(a[1]) + '" loading="lazy" onerror="this.parentNode.style.display=\'none\'"><span>' + esc(a[1]) + '</span></div>'; }).join('') +
+      '<h2>🧭 Tizimli nazorat</h2><p>Telegram orqali sms/video hisobot, haftalik testlar, Edu Tizim, Face ID va kameralar.</p>' +
+      '<h2>🏛 Muhit</h2><p>Zamonaviy o\'quv xonalari, individual yondashuv (Support Teacher), mock testlar va yakshanba tadbirlari.</p>' +
+      ABOUT.slice(6).map(function (a) { return '<div class="ph"><img src="about/' + a[0] + '" alt="' + esc(a[1]) + '" loading="lazy" onerror="this.parentNode.style.display=\'none\'"><span>' + esc(a[1]) + '</span></div>'; }).join('') +
+      '<div class="card"><div class="row"><b>📍 Manzil</b><span>Toshkent, Yashnobod, Qorasuv-35</span></div>' +
+      '<div class="row"><b>📣 Sahifalar</b><span>Instagram: uniteen.uz<br>Telegram: t.me/uniteenuz</span></div></div>');
+    foot('<button class="b" id="bk">← Orqaga</button>', [['bk', sWelcome]]);
   }
 
   function sConsent() {
