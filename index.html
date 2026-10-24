@@ -39,6 +39,13 @@ button.b[disabled]{opacity:.4}button.g{flex:0 0 auto;background:var(--card);colo
 .steps li:before{content:counter(s);flex:0 0 28px;height:28px;border-radius:50%;background:var(--btn);color:var(--btx);display:grid;place-items:center;font-weight:700;font-size:14px}
 .chk{display:flex;gap:12px;align-items:flex-start;margin:14px 0}.chk input{width:22px;height:22px;margin-top:2px}
 .ph{margin:0 0 14px}.ph img{display:block;width:100%;border-radius:14px;background:var(--card)}.ph span{display:block;margin:6px 2px 0;color:var(--hint);font-size:14px}
+button.role{display:flex;align-items:center;gap:14px;width:100%;text-align:left;margin:0 0 12px;padding:14px;border:1.5px solid var(--line);border-radius:18px;background:var(--bg);color:inherit;font:inherit;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+button.role:active{border-color:var(--btn);background:var(--card)}
+.ri{flex:none;width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;background:var(--card)}
+.rb{flex:1;min-width:0}.rt{display:block;font-size:17px;font-weight:700;line-height:1.25}.rd{display:block;font-size:14px;color:var(--hint);margin:3px 0 7px;line-height:1.35}
+.rm{display:flex;flex-wrap:wrap;gap:6px}.rm i{font-style:normal;font-size:12px;padding:3px 9px;border-radius:999px;background:var(--card);color:var(--hint)}
+.ra{flex:none;font-size:26px;color:var(--hint);line-height:1}
+.brand{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--btn);margin:4px 0 6px}
 ul.pts{margin:0 0 12px;padding-left:20px}ul.pts li{margin:4px 0}
 </style>
 </head>
@@ -59,11 +66,11 @@ ul.pts{margin:0 0 12px;padding-left:20px}ul.pts li{margin:4px 0}
   var KEY = 'uni_form_v2';   // v2: keyslar yangilandi, eski saqlangan javoblar ishlatilmasin
 
   function haptic(t) { try { tg && tg.HapticFeedback && tg.HapticFeedback.impactOccurred(t || 'light'); } catch (e) {} }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify({ p: ST.p, a: ST.a, sec: ST.sec, hid: ST.hid, idx: ST.idx, screen: ST.screen, n: ST.D ? ST.D.cases.length : 0 })); } catch (e) {} }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify({ vac: ST.vac, p: ST.p, a: ST.a, sec: ST.sec, hid: ST.hid, idx: ST.idx, screen: ST.screen, n: ST.D ? ST.D.cases.length : 0 })); } catch (e) {} }
   function restore() {
     try {
       var r = JSON.parse(localStorage.getItem(KEY) || 'null');
-      if (r && ST.D && r.n === ST.D.cases.length) { ST.consent = true; ST.p = r.p || {}; ST.a = r.a || []; ST.sec = r.sec || []; ST.hid = r.hid || 0; ST.idx = r.idx || 0; return r.screen; }
+      if (r && ST.D && r.n === ST.D.cases.length) { ST.consent = true; ST.vac = r.vac || 'adm'; ST.p = r.p || {}; ST.a = r.a || []; ST.sec = r.sec || []; ST.hid = r.hid || 0; ST.idx = r.idx || 0; return r.screen; }
     } catch (e) {}
     return null;
   }
@@ -100,9 +107,9 @@ ul.pts{margin:0 0 12px;padding-left:20px}ul.pts li{margin:4px 0}
 
   /* ---------- ekranlar ---------- */
   function sWelcome() {
-    ST.screen = 'welcome'; setBack(null);
+    ST.screen = 'welcome'; setBack(sRole);
     view('<h1>👋 Assalomu alaykum' + (ST.D.name ? ', ' + esc(ST.D.name) : '') + '!</h1>' +
-      '<p><b>' + esc(ST.D.company) + '</b> jamoasiga <b>administrator / sotuv menejeri</b> vakansiyasiga xush kelibsiz.</p>' +
+      '<p><b>' + esc(ST.D.company) + '</b> jamoasiga <b>' + esc((VAC[ST.vac] || VAC.adm).t) + '</b> vakansiyasiga xush kelibsiz.</p>' +
       '<div class="card">' +
       '<div class="row"><b>🕗 Ish vaqti</b><span>08:30–18:00</span></div>' +
       '<div class="row"><b>💰 Maosh</b><span>6 500 000 so\'m (fix + bonus)</span></div>' +
@@ -112,8 +119,30 @@ ul.pts{margin:0 0 12px;padding-left:20px}ul.pts li{margin:4px 0}
       '<li><div><b>3 ta savolga video javob</b><br><span class="hint">o\'zbekcha va ruscha, botda</span></div></li>' +
       '<li><div><b>To\'liq bo\'yli foto</b><br><span class="hint">botda</span></div></li>' +
       '<li><div><b>3 ta qisqa yozma savol</b><br><span class="hint">botda</span></div></li></ol>' +
-      '<p class="hint">Javoblaringiz saqlanadi — ilovani yopib, keyin davom ettirishingiz mumkin.</p>');
-    foot('<button class="b g" id="tc">👩‍🏫 Ingliz tili ustozi vakansiyasi</button><button class="b g" id="ab">🏢 Biz haqimizda</button><button class="b" id="go">Boshlash</button>', [['tc', sTeacher], ['ab', sAbout], ['go', sConsent]]);
+      '<p class="hint">Javoblaringiz saqlanadi — ilovani yopib, keyin davom ettirishingiz mumkin. Ma\'lumotlaringiz faqat nomzodlarni saralash uchun ishlatiladi; botga <b>/ochirish</b> deb yozib, ularni o\'chirishingiz mumkin.</p>');
+    foot('<button class="b g" id="ab">🏢 Biz haqimizda</button><button class="b" id="go">Boshlash</button>', [['ab', sAbout], ['go', sProfile]]);
+  }
+
+  /* Birinchi ekran: lavozim tanlash */
+  var VAC = {
+    adm: { t: 'Administrator', ic: '🗂️', d: 'Markaz ishini tashkil qilish: qabul, jadval, hujjatlar va mijozlar bilan aloqa', m: ['4 bosqich', '30–35 daqiqa'] },
+    sot: { t: 'Sotuv menejeri', ic: '📈', d: 'Yangi o\'quvchilarni jalb qilish, suhbat va ro\'yxatga olish', m: ['4 bosqich', '30–35 daqiqa'] },
+    tch: { t: 'Ingliz tili ustozi', ic: '🧑‍🏫', d: 'Dars berish: o\'zini tanishtirish, grammatikani tushuntirish va qiyin vaziyat keysi', m: ['3 topshiriq', '~40 daqiqa'] }
+  };
+  function sRole() {
+    ST.screen = 'role'; setBack(null);
+    var card = function (k) {
+      var v = VAC[k];
+      return '<button class="role" id="r_' + k + '"><span class="ri">' + v.ic + '</span><span class="rb"><span class="rt">' + v.t + '</span><span class="rd">' + v.d +
+        '</span><span class="rm">' + v.m.map(function (x) { return '<i>' + x + '</i>'; }).join('') + '</span></span><span class="ra">›</span></button>';
+    };
+    view('<div class="brand">' + esc(ST.D.company) + '</div><h1>👋 Assalomu alaykum' + (ST.D.name ? ', ' + esc(ST.D.name) : '') + '!</h1>' +
+      '<p>Ochiq vakansiyalar. O\'zingizga mosini tanlang 👇</p>' + card('adm') + card('sot') + card('tch') +
+      '<p class="hint" style="text-align:center;margin-top:6px">Tanlagandan keyin vakansiya tafsilotlari ko\'rsatiladi</p>');
+    foot('');
+    $('r_adm').onclick = function () { ST.vac = 'adm'; sWelcome(); };
+    $('r_sot').onclick = function () { ST.vac = 'sot'; sWelcome(); };
+    $('r_tch').onclick = sTeacher;
   }
 
   /* Ustoz vakansiyasi botning o'zida: botga "/start ustoz" yuboriladi */
@@ -134,7 +163,7 @@ ul.pts{margin:0 0 12px;padding-left:20px}ul.pts li{margin:4px 0}
       '<h2>📚 Yo\'nalishlar</h2><ul class="pts"><li>Ingliz tili: Beginner dan IELTS / CEFR gacha</li>' +
       '<li>Matematika: Milliy sertifikat, SAT, olimpiadalar va ixtisoslashgan maktablarga tayyorlov</li>' +
       '<li>IT: Frontend, Backend, Scratch va AI</li><li>Pochemuchka</li></ul>' +
-      '<h2>👩‍🏫 Jamoa</h2><p>Tajribali ustozlar: 4 yildan 20 yilgacha tajriba, IELTS 8.5 natijali o\'qituvchilar, Milliy sertifikatdan A+ natija, IT bo\'yicha Certiport sertifikatlari.</p>' +
+      '<h2>🧑‍🏫 Jamoa</h2><p>Tajribali ustozlar: 4 yildan 20 yilgacha tajriba, IELTS 8.5 natijali o\'qituvchilar, Milliy sertifikatdan A+ natija, IT bo\'yicha Certiport sertifikatlari.</p>' +
       ABOUT.slice(1, 6).map(function (a) { return '<div class="ph"><img src="about/' + a[0] + '" alt="' + esc(a[1]) + '" loading="lazy" onerror="this.parentNode.style.display=\'none\'"><span>' + esc(a[1]) + '</span></div>'; }).join('') +
       '<h2>🧭 Tizimli nazorat</h2><p>Telegram orqali sms/video hisobot, haftalik testlar, Edu Tizim, Face ID va kameralar.</p>' +
       '<h2>🏛 Muhit</h2><p>Zamonaviy o\'quv xonalari, individual yondashuv (Support Teacher), mock testlar va yakshanba tadbirlari.</p>' +
@@ -144,20 +173,10 @@ ul.pts{margin:0 0 12px;padding-left:20px}ul.pts li{margin:4px 0}
     foot('<button class="b" id="bk">← Orqaga</button>', [['bk', sWelcome]]);
   }
 
-  function sConsent() {
-    ST.screen = 'consent'; setBack(sWelcome);
-    view('<h1>🔒 Rozilik</h1><div class="card">Ism, telefon, video va foto ma\'lumotlaringiz faqat nomzodlarni saralash maqsadida ' +
-      '<b>Uniteen Academy rahbariyati</b> tomonidan ko\'rib chiqiladi va uchinchi shaxslarga berilmaydi. ' +
-      'Istalgan vaqtda botga <b>/ochirish</b> deb yozib, ma\'lumotlaringizni o\'chirishingiz mumkin.</div>' +
-      '<label class="chk"><input type="checkbox" id="cb"' + (ST.consent ? ' checked' : '') + '><span>Shaxsiy ma\'lumotlarimni (ism, telefon, video, foto) shu maqsadda qayta ishlashga roziman</span></label>');
-    var upd = function () { ST.consent = $('cb').checked; $('nx').disabled = !ST.consent; };
-    foot('<button class="b" id="nx"' + (ST.consent ? '' : ' disabled') + '>Davom etish</button>', [['nx', sProfile]]);
-    $('cb').onchange = upd;
-  }
 
   var PCH = ['exp', 'eng', 'rus', 'amo', 'edu', 'gs'];
   function sProfile() {
-    ST.screen = 'profile'; setBack(sConsent); save();
+    ST.screen = 'profile'; setBack(sWelcome); save();
     var h = '<h1>Tanishuv</h1>' +
       '<label class="f" for="nm">Ism va familiya</label><input type="text" id="nm" autocomplete="name" placeholder="Masalan: Aziza Karimova" value="' + esc(ST.p.name || '') + '">' +
       '<label class="f" for="ph">Telefon raqami</label><input type="tel" id="ph" inputmode="tel" autocomplete="tel" placeholder="+998 90 123 45 67" value="' + esc(ST.p.phone || '') + '">' +
@@ -217,7 +236,7 @@ ul.pts{margin:0 0 12px;padding-left:20px}ul.pts li{margin:4px 0}
   function sSubmit() {
     ST.screen = 'submit'; setBack(null);
     view('<div class="big">⏳</div><h1 class="c">Yuborilmoqda…</h1><p class="c hint">Oynani yopmang</p>'); foot('');
-    call('submit', { p: ST.p, ans: ST.a, sec: ST.sec, hid: ST.hid }).then(function (r) {
+    call('submit', { p: ST.p, ans: ST.a, sec: ST.sec, hid: ST.hid, vac: ST.vac || 'adm' }).then(function (r) {
       if (r && r.ok) { clearSaved(); return r.done ? sDone('done') : r.resume ? sDone('resume') : sDone('ok'); }
       if (r && r.err === 'valid') return fail('Tekshiring', r.msg || 'Ma\'lumotda xato bor');
       if (r && r.err === 'auth') return fail('Kirish xatosi', 'Ilovani Telegramdagi bot ichidan qayta oching.');
@@ -229,7 +248,7 @@ ul.pts{margin:0 0 12px;padding-left:20px}ul.pts li{margin:4px 0}
     ST.screen = 'done'; setBack(null);
     if (kind === 'done') view('<div class="big">✅</div><h1 class="c">Ariza allaqachon topshirilgan</h1><p class="c hint">Natijalar bo\'yicha siz bilan bog\'lanamiz.</p>');
     else view('<div class="big">🎉</div><h1 class="c">' + (kind === 'resume' ? 'Anketa qabul qilingan' : 'Anketa va keyslar qabul qilindi') + '</h1>' +
-      '<div class="card"><b>Endi botga qayting:</b><ol class="steps"><li><div>' + ST.D.video.n + ' ta savolga <b>video</b> javob bering (har biri o\'zbekcha va ruscha, ' + ST.D.video.min + '–' + ST.D.video.max + ' soniya)</div></li>' +
+      '<div class="card"><b>Endi botga qayting:</b><ol class="steps"><li><div>' + ST.D.video.n + ' ta savolga <b>video</b> javob bering (har biri o\'zbekcha va ruscha, kamida ' + ST.D.video.min + ' soniya)</div></li>' +
       '<li><div>To\'liq bo\'yli <b>foto</b> yuboring</div></li>' +
       '<li><div>3 ta qisqa <b>yozma savolga</b> javob bering</div></li></ol></div>' +
       '<p class="c hint">Bot sizga birinchi savolni allaqachon yubordi.</p>');
@@ -248,7 +267,7 @@ ul.pts{margin:0 0 12px;padding-left:20px}ul.pts li{margin:4px 0}
       if (r.resume) return sDone('resume');
       ST.D = r;
       var sc = restore();
-      if (sc === 'case') sCase(); else if (sc === 'profile') sProfile(); else sWelcome();
+      if (sc === 'case') sCase(); else if (sc === 'profile') sProfile(); else sRole();
     }).catch(function (e) { fail('Ulanish xatosi', 'Server javob bermadi. Sabab: ' + (e && e.message ? e.message : e) + (ST.err ? ' | 1-urinish: ' + ST.err : '')); });
   }
   start();
