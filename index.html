@@ -113,7 +113,14 @@ ul.pts{margin:0 0 12px;padding-left:20px}ul.pts li{margin:4px 0}
       '<li><div><b>To\'liq bo\'yli foto</b><br><span class="hint">botda</span></div></li>' +
       '<li><div><b>3 ta qisqa yozma savol</b><br><span class="hint">botda</span></div></li></ol>' +
       '<p class="hint">Javoblaringiz saqlanadi — ilovani yopib, keyin davom ettirishingiz mumkin.</p>');
-    foot('<button class="b g" id="ab">🏢 Biz haqimizda</button><button class="b" id="go">Boshlash</button>', [['ab', sAbout], ['go', sConsent]]);
+    foot('<button class="b g" id="tc">👩‍🏫 Ingliz tili ustozi vakansiyasi</button><button class="b g" id="ab">🏢 Biz haqimizda</button><button class="b" id="go">Boshlash</button>', [['tc', sTeacher], ['ab', sAbout], ['go', sConsent]]);
+  }
+
+  /* Ustoz vakansiyasi botning o'zida: botga "/start ustoz" yuboriladi */
+  function sTeacher() {
+    var link = 'https://t.me/uniteenhr_bot?start=ustoz';
+    try { if (tg && tg.openTelegramLink) tg.openTelegramLink(link); else window.open(link, '_blank'); } catch (e) { window.open(link, '_blank'); }
+    try { if (tg) setTimeout(function () { tg.close(); }, 300); } catch (e2) {}
   }
 
   /* Biz haqimizda: rasmlar about/ papkasida (shu sayt bilan birga) */
