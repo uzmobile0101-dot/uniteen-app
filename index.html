@@ -41,6 +41,7 @@ button.b[disabled]{opacity:.4}button.g{flex:0 0 auto;background:var(--card);colo
 .ph{margin:0 0 14px}.ph img{display:block;width:100%;border-radius:14px;background:var(--card)}.ph span{display:block;margin:6px 2px 0;color:var(--hint);font-size:14px}
 button.role{display:flex;align-items:center;gap:14px;width:100%;text-align:left;margin:0 0 12px;padding:14px;border:1.5px solid var(--line);border-radius:18px;background:var(--bg);color:inherit;font:inherit;box-shadow:0 1px 3px rgba(0,0,0,.05)}
 button.role:active{border-color:var(--btn);background:var(--card)}
+button.role.cont{border-color:var(--btn)}
 .ri{flex:none;width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;background:var(--card)}
 .rb{flex:1;min-width:0}.rt{display:block;font-size:17px;font-weight:700;line-height:1.25}.rd{display:block;font-size:14px;color:var(--hint);margin:3px 0 7px;line-height:1.35}
 .rm{display:flex;flex-wrap:wrap;gap:6px}.rm i{font-style:normal;font-size:12px;padding:3px 9px;border-radius:999px;background:var(--card);color:var(--hint)}
@@ -70,7 +71,7 @@ ul.pts{margin:0 0 12px;padding-left:20px}ul.pts li{margin:4px 0}
   function restore() {
     try {
       var r = JSON.parse(localStorage.getItem(KEY) || 'null');
-      if (r && ST.D && r.n === ST.D.cases.length) { ST.consent = true; ST.vac = r.vac || 'adm'; ST.p = r.p || {}; ST.a = r.a || []; ST.sec = r.sec || []; ST.hid = r.hid || 0; ST.idx = r.idx || 0; return r.screen; }
+      if (r && ST.D && r.n === ST.D.cases.length) { ST.consent = true; ST.vac = r.vac || ''; ST.p = r.p || {}; ST.a = r.a || []; ST.sec = r.sec || []; ST.hid = r.hid || 0; ST.idx = r.idx || 0; return r.screen; }
     } catch (e) {}
     return null;
   }
@@ -136,13 +137,21 @@ ul.pts{margin:0 0 12px;padding-left:20px}ul.pts li{margin:4px 0}
       return '<button class="role" id="r_' + k + '"><span class="ri">' + v.ic + '</span><span class="rb"><span class="rt">' + v.t + '</span><span class="rd">' + v.d +
         '</span><span class="rm">' + v.m.map(function (x) { return '<i>' + x + '</i>'; }).join('') + '</span></span><span class="ra">›</span></button>';
     };
+    var cont = '';
+    if (ST.resume && VAC[ST.vac]) {
+      var where = ST.resume === 'case' ? 'keys ' + (ST.idx + 1) + '/' + ST.D.cases.length : 'anketa';
+      cont = '<button class="role cont" id="r_cont"><span class="ri">▶️</span><span class="rb"><span class="rt">Davom ettirish</span><span class="rd">' +
+        esc(VAC[ST.vac].t) + ' · ' + where + '. Javoblaringiz saqlangan.</span></span><span class="ra">›</span></button>' +
+        '<p class="hint" style="margin:2px 0 10px">Yoki boshqa vakansiyani tanlang:</p>';
+    }
     view('<div class="brand">' + esc(ST.D.company) + '</div><h1>👋 Assalomu alaykum' + (ST.D.name ? ', ' + esc(ST.D.name) : '') + '!</h1>' +
-      '<p>Ochiq vakansiyalar. O\'zingizga mosini tanlang 👇</p>' + card('adm') + card('sot') + card('tch') +
+      (cont ? '' : '<p>Ochiq vakansiyalar. O\'zingizga mosini tanlang 👇</p>') + cont + card('adm') + card('sot') + card('tch') +
       '<p class="hint" style="text-align:center;margin-top:6px">Tanlagandan keyin vakansiya tafsilotlari ko\'rsatiladi</p>');
     foot('');
     $('r_adm').onclick = function () { ST.vac = 'adm'; sWelcome(); };
     $('r_sot').onclick = function () { ST.vac = 'sot'; sWelcome(); };
     $('r_tch').onclick = sTeacher;
+    if (cont) $('r_cont').onclick = function () { if (ST.resume === 'case') sCase(); else sProfile(); };
   }
 
   /* Ustoz vakansiyasi botning o'zida: botga "/start ustoz" yuboriladi */
@@ -267,7 +276,9 @@ ul.pts{margin:0 0 12px;padding-left:20px}ul.pts li{margin:4px 0}
       if (r.resume) return sDone('resume');
       ST.D = r;
       var sc = restore();
-      if (sc === 'case') sCase(); else if (sc === 'profile') sProfile(); else sRole();
+      if ((sc === 'case' || sc === 'profile') && VAC[ST.vac] && ST.vac !== 'tch') ST.resume = sc;   // chala anketa: "Davom ettirish" kartasi
+      else if (sc) { clearSaved(); ST.vac = ''; ST.p = {}; ST.a = []; ST.sec = []; ST.hid = 0; ST.idx = 0; }   // eski versiyadan qolgan: yangidan
+      sRole();                                             // ilova har doim vakansiya tanlashdan ochiladi
     }).catch(function (e) { fail('Ulanish xatosi', 'Server javob bermadi. Sabab: ' + (e && e.message ? e.message : e) + (ST.err ? ' | 1-urinish: ' + ST.err : '')); });
   }
   start();
